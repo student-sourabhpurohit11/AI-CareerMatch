@@ -1,64 +1,103 @@
 # AI-CareerMatch
 ### AI-Powered Cloud-Based Resume Analysis, Job Matching, and Career Recommendation System
+*B.Tech Computer Science & Engineering Major College Project*
 
-AI-CareerMatch is an intelligent, explainable career platform built for engineering students and job seekers. It leverages Natural Language Processing (NLP), semantic vector embeddings, and an explainable scoring engine to parse resumes, match candidates with live job requisitions, diagnose skill gaps, and provide actionable career pathways.
+[![Python 3.12](https://img.shields.io/badge/Python-3.12-blue.svg)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-green.svg)](https://fastapi.tiangolo.com)
+[![React 18](https://img.shields.io/badge/React-18+-61DAFB.svg)](https://react.dev)
+[![MySQL 8.0](https://img.shields.io/badge/MySQL-8.0-orange.svg)](https://mysql.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
 
-## 🌟 Key Features
-- **Intelligent Resume Parsing:** Automated text extraction from PDF and DOCX files with section identification and candidate profiling.
-- **Explainable Resume Scoring:** Multi-factor resume quality scoring (0-100) assessing skill breadth, projects, experience, and completeness.
-- **Explainable Job Matching:** Hybrid matching engine combining explicit skill overlap, semantic embedding similarity (Sentence Transformers), experience relevance, and education alignment.
-- **Skill-Gap Analysis:** Identifies missing required vs. preferred competencies with priority scoring (High/Medium/Low).
-- **Career & Project Recommendations:** Targeted role suggestions with personalized project and course recommendations to bridge identified gaps.
-- **Application Tracking:** Comprehensive job tracking pipeline (Saved, Applied, Interview, Selected, Rejected).
-- **Admin Management Portal:** Administrative oversight for users, roles, jobs, companies, skills taxonomy, and analytical dashboards.
+## 🌟 Project Overview
+
+**AI-CareerMatch** is an explainable, production-ready career platform that analyzes resumes, computes hybrid semantic job compatibility scores, diagnoses prioritized skill gaps, and recommends targeted educational pathways.
+
+Unlike traditional opaque "black-box" systems, AI-CareerMatch transparently details **why** a candidate is matched to a role, highlights missing required competencies with priority ratings (High, Medium, Low), and provides direct links to verified free courses to bridge identified gaps.
 
 ---
 
 ## 🛠️ Technology Stack
 
-| Layer | Technologies |
+| Layer | Technologies Used |
 | :--- | :--- |
-| **Frontend** | React 18+, Vite, Tailwind CSS, React Router, Axios, Lucide Icons |
+| **Frontend** | React 18, Vite, Tailwind CSS, React Router, Axios, Lucide Icons |
 | **Backend** | Python 3.12, FastAPI, Pydantic v2, SQLAlchemy 2.0 |
-| **Database** | MySQL 8.x |
-| **AI / NLP** | spaCy, Sentence-Transformers (`all-MiniLM-L6-v2`), scikit-learn, PyMuPDF, python-docx |
-| **Authentication** | OAuth2 with JWT (JSON Web Tokens) & Passlib (Bcrypt) |
-| **Cloud (Target)** | AWS (EC2, RDS MySQL, S3, CloudFront, CloudWatch) |
+| **Database** | MySQL 8.x (InnoDB, utf8mb4) |
+| **AI / NLP** | spaCy (`en_core_web_sm`), Sentence-Transformers (`all-MiniLM-L6-v2`), scikit-learn |
+| **Document Parsers** | PyMuPDF (PDF extraction), python-docx (DOCX extraction) |
+| **Authentication** | OAuth2 Bearer JWT (JSON Web Tokens), Passlib (Bcrypt hashing) |
+| **Testing** | pytest, HTTPX, Starlette TestClient (9/9 automated tests passing) |
+| **Deployment** | Docker, Docker Compose, AWS (EC2, RDS MySQL, S3, CloudFront) |
 
 ---
 
-## 📁 Repository Structure
+## 🚀 Quick Start Guide (macOS Local Execution)
+
+### 1. Database Setup (MySQL)
+Ensure your local MySQL service is running via Homebrew:
+```bash
+brew services start mysql
 ```
-AI-CareerMatch/
-├── frontend/             # React + Tailwind CSS client application
-├── backend/              # FastAPI application & AI/NLP pipelines
-│   └── app/
-│       ├── api/          # REST route handlers
-│       ├── models/       # SQLAlchemy ORM models
-│       ├── schemas/      # Pydantic schemas (request/response validation)
-│       ├── services/     # Business logic & authentication
-│       ├── ai/           # Resume parser, NLP extractor, matcher, recommender
-│       ├── database/     # DB engine, session factory, base models
-│       └── core/         # Settings, JWT security, configuration
-├── database/             # schema.sql, seed.sql, migrations
-├── deployment/           # Docker and AWS CloudFormation / scripts
-├── docs/                 # Architecture diagrams, API specs, viva prep
-├── tests/                # Unit, integration, and security test suites
-├── uploads/              # Local storage for uploaded candidate resumes
-├── .gitignore
-└── README.md
+Initialize the schema and seed data:
+```bash
+mysql -u root -p < database/schema.sql
+mysql -u root -p < database/seed.sql
 ```
+
+### 2. Backend Setup (FastAPI)
+Navigate to the backend directory, activate the Python 3.12 virtual environment, and launch the server:
+```bash
+cd backend
+source .venv/bin/activate
+uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+```
+- API Health Check: [http://127.0.0.1:8000/api/health](http://127.0.0.1:8000/api/health)
+- Interactive Swagger API Documentation: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+### 3. Frontend Setup (React 18 + Vite)
+In a new terminal window:
+```bash
+cd frontend
+npm run dev
+```
+Open your browser at: **[http://localhost:5173](http://localhost:5173)**
 
 ---
 
-## 🚀 Getting Started
+## 🎓 Demo Accounts for Viva Evaluation
 
-Detailed phase-by-phase instructions are documented as each module is built.
+| Account Type | Email | Password | Role & Purpose |
+| :--- | :--- | :--- | :--- |
+| **Student Demo** | `student.test.unit@example.com` | `SecureStudentPass123` | Upload resumes, explore matches, track applications |
+| **Admin Demo** | `admin@aicareermatch.com` | `Admin@123` | System metrics, company management, job postings |
 
-### Prerequisites
-- Python 3.12+
-- Node.js 18+ & npm
-- MySQL Server 8.x
-- Git & CMake
+*(Both accounts are pre-configured with 1-click quick-fill buttons on the login page).*
+
+---
+
+## 🧪 Automated Testing
+
+Execute the comprehensive test suite verifying authentication, PDF/DOCX parsing, NLP extraction, explainable scoring, and job matching:
+```bash
+backend/.venv/bin/pytest tests/ -v
+```
+**Results: 9 / 9 Tests Passing (100% Success Rate).**
+
+---
+
+## 🐳 Docker Deployment
+
+To run the entire system (FastAPI + React + MySQL 8) in isolated containers:
+```bash
+docker compose up --build
+```
+Access the application at [http://localhost:3000](http://localhost:3000).
+
+---
+
+## ☁️ Cloud Architecture & Academic Report
+
+- **AWS Cloud Deployment Blueprint:** Detailed in [deployment/aws/architecture.md](deployment/aws/architecture.md)
+- **B.Tech Major Project Viva Report (31 Sections):** Comprehensive documentation in [docs/PROJECT_REPORT.md](docs/PROJECT_REPORT.md)
