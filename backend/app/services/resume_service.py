@@ -43,12 +43,25 @@ class ResumeService:
         unique_filename = f"{user.id}_{uuid.uuid4().hex[:8]}{ext}"
         saved_file_path = os.path.join(upload_dir, unique_filename)
 
+        # Rewind file buffer before writing
+        if hasattr(file.file, "seek"):
+            file.file.seek(0)
+
         with open(saved_file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
 
         file_size = os.path.getsize(saved_file_path)
+        if file_size == 0:
+            if os.path.exists(saved_file_path):
+                os.remove(saved_file_path)
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="The uploaded file is empty (0 bytes). Please upload a valid document."
+            )
+
         if file_size > settings.MAX_FILE_SIZE_MB * 1024 * 1024:
-            os.remove(saved_file_path)
+            if os.path.exists(saved_file_path):
+                os.remove(saved_file_path)
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"File exceeds maximum allowed limit of {settings.MAX_FILE_SIZE_MB}MB."
@@ -61,18 +74,20 @@ class ResumeService:
             else:
                 raw_text = extract_text_from_docx(saved_file_path)
         except Exception as e:
-            os.remove(saved_file_path)
+            if os.path.exists(saved_file_path):
+                os.remove(saved_file_path)
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail=f"Unable to extract text from document: {str(e)}"
             )
 
         cleaned_text = clean_text(raw_text)
-        if not cleaned_text or len(cleaned_text.strip()) < 30:
-            os.remove(saved_file_path)
+        if not cleaned_text or len(cleaned_text.strip()) < 5:
+            if os.path.exists(saved_file_path):
+                os.remove(saved_file_path)
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Resume appears empty or unreadable."
+                detail="Could not extract text from document. If your resume is an image/scanned PDF, please upload a document with selectable text."
             )
 
         # 5. NLP Section Partitioning & Skill Extraction
@@ -82,6 +97,12 @@ class ResumeService:
 
         # 6. Compute Explainable Score & Health Analysis
         analysis_data = analyze_resume_sections(sections, extracted_skills, cleaned_text)
+
+        # Deactivate previous active resumes for this candidate so the latest is primary
+        db.query(Resume).filter(
+            Resume.user_id == user.id,
+            Resume.is_active == True
+        ).update({"is_active": False})
 
         # 7. Create DB Record for Resume
         db_resume = Resume(
@@ -127,6 +148,8 @@ class ResumeService:
                     source="extracted"
                 )
                 db.add(u_skill)
+            else:
+                existing.resume_id = db_resume.id
 
         db.commit()
         db.refresh(db_resume)
@@ -145,6 +168,7 @@ class ResumeService:
         resume = ResumeService.get_resume_by_id(resume_id, user_id, db)
         if not resume:
             return False
+        was_active = resume.is_active
         if os.path.exists(resume.file_path):
             try:
                 os.remove(resume.file_path)
@@ -152,4 +176,11 @@ class ResumeService:
                 pass
         db.delete(resume)
         db.commit()
+
+        if was_active:
+            latest = db.query(Resume).filter(Resume.user_id == user_id).order_by(Resume.uploaded_at.desc()).first()
+            if latest:
+                latest.is_active = True
+                db.commit()
+
         return True

@@ -47,8 +47,8 @@ frontend/yarn-debug.log*
 frontend/yarn-error.log*
 
 # Uploads & User Files
-uploads/resumes/*
-!uploads/resumes/.gitkeep
+backend/uploads/**
+!backend/uploads/resumes/.gitkeep
 
 # AI / ML Cache
 .cache/

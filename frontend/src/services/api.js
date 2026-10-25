@@ -4,17 +4,20 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000/api'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 });
 
-// Request interceptor to attach JWT Bearer token
+// Request interceptor to attach JWT Bearer token and handle multipart
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    // If sending FormData, delete preset Content-Type so browser sets boundary automatically
+    if (config.data instanceof FormData) {
+      if (config.headers) {
+        delete config.headers['Content-Type'];
+      }
     }
     return config;
   },

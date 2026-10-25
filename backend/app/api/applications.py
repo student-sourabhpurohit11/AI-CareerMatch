@@ -1,7 +1,7 @@
 from typing import List
 from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.database.session import get_db
 from app.api.deps import get_current_user
@@ -57,7 +57,9 @@ def get_user_applications(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    return db.query(Application).filter(
+    return db.query(Application).options(
+        joinedload(Application.job).joinedload(Job.company)
+    ).filter(
         Application.user_id == current_user.id
     ).order_by(Application.updated_at.desc()).all()
 

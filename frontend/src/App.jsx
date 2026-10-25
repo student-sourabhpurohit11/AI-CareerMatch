@@ -63,9 +63,11 @@ function App() {
             <Route path="/resumes" element={<Resumes />} />
             <Route path="/resumes/:id/analysis" element={<ResumeAnalysis />} />
             <Route path="/matches" element={<JobMatches />} />
+            <Route path="/job-matches" element={<Navigate to="/matches" replace />} />
             <Route path="/jobs" element={<Jobs />} />
             <Route path="/skill-gap" element={<SkillGap />} />
             <Route path="/career-paths" element={<CareerRecommendations />} />
+            <Route path="/career-recommendations" element={<Navigate to="/career-paths" replace />} />
             <Route path="/applications" element={<Applications />} />
             <Route path="/profile" element={<Profile />} />
 

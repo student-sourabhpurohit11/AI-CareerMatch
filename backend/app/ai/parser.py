@@ -1,16 +1,22 @@
 import re
-import fitz  # PyMuPDF
+import pymupdf as fitz
 from docx import Document
 
 
 def extract_text_from_pdf(file_path: str) -> str:
     """
-    Extracts text from PDF documents using PyMuPDF (fitz) with page-by-page consolidation.
+    Extracts text from PDF documents using PyMuPDF (fitz) with layout-aware and block fallback.
     """
     text = ""
     with fitz.open(file_path) as doc:
         for page in doc:
-            text += page.get_text("text") + "\n"
+            page_text = page.get_text("text")
+            if not page_text or len(page_text.strip()) < 5:
+                # Fallback to structural block extraction for complex/columnar layouts
+                blocks = page.get_text("blocks")
+                block_texts = [b[4] for b in blocks if len(b) > 4 and isinstance(b[4], str) and b[4].strip()]
+                page_text = "\n".join(block_texts)
+            text += page_text + "\n"
     return text.strip()
 
 

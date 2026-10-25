@@ -61,25 +61,43 @@ def calculate_job_match(
                 "is_required": is_req
             })
 
+    # If no candidate text or skills exist, return genuine 0% match
+    if not candidate_text.strip() and not candidate_skills:
+        return {
+            "job_id": job.id,
+            "job_title": job.title,
+            "company_name": job.company.name if job.company else "Tech Partner",
+            "location": job.location,
+            "compatibility": 0.0,
+            "explicit_skill_score": 0.0,
+            "semantic_similarity": 0.0,
+            "matched_skills": [],
+            "missing_skills": missing_skills,
+            "rationale": "No active resume uploaded. Upload a resume in Resume Management to evaluate true role compatibility."
+        }
+
     # Explicit skill score calculation
     if total_required_weight > 0:
         explicit_skill_score = (matched_required_weight / total_required_weight) * 100.0
     else:
-        explicit_skill_score = 70.0
+        explicit_skill_score = 50.0 if matched_skills else 0.0
 
     # Semantic similarity using Sentence Transformer embeddings
-    try:
-        cand_embed = compute_embedding(candidate_text[:1500])
-        job_embed = compute_embedding((job.title + " " + job.description)[:1500])
-        semantic_sim = compute_cosine_similarity(cand_embed, job_embed) * 100.0
-    except Exception:
-        semantic_sim = explicit_skill_score  # Fallback
+    if candidate_text.strip():
+        try:
+            cand_embed = compute_embedding(candidate_text[:1500])
+            job_embed = compute_embedding((job.title + " " + job.description)[:1500])
+            semantic_sim = compute_cosine_similarity(cand_embed, job_embed) * 100.0
+        except Exception:
+            semantic_sim = explicit_skill_score
+    else:
+        semantic_sim = 0.0
 
     # Experience relevance score (0-100)
-    experience_score = 80.0  # College entry-level baseline
+    experience_score = 75.0 if candidate_text.strip() else 0.0
 
     # Education relevance score (0-100)
-    education_score = 90.0
+    education_score = 85.0 if candidate_text.strip() else 0.0
 
     final_score = round(
         (weights["explicit_skill"] * explicit_skill_score) +
@@ -88,7 +106,7 @@ def calculate_job_match(
         (weights["education_relevance"] * education_score),
         1
     )
-    final_score = max(10.0, min(99.0, final_score))
+    final_score = max(0.0, min(99.0, final_score))
 
     # Explainable rationale generation
     required_missing = [m["name"] for m in missing_skills if m["is_required"]]
