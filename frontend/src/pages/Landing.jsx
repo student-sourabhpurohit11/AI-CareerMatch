@@ -37,8 +37,8 @@ const Landing = () => {
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-20 pb-16 lg:pt-28 lg:pb-24">
         {/* Ambient background glows */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-brand-600/20 blur-[130px] rounded-full pointer-events-none" />
-        <div className="absolute top-1/3 right-1/4 w-[400px] h-[300px] bg-indigo-500/15 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(600px,100vw)] h-[350px] bg-brand-600/20 blur-[130px] rounded-full pointer-events-none" />
+        <div className="absolute top-1/3 right-1/4 w-[min(400px,80vw)] h-[300px] bg-indigo-500/15 blur-[120px] rounded-full pointer-events-none" />
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/30 text-brand-300 text-xs font-semibold mb-6">

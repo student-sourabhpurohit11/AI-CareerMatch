@@ -3,9 +3,22 @@
 @tailwind utilities;
 
 @layer base {
+  /* Mobile Safari 100vh fix — use dynamic viewport height */
+  :root {
+    --vh: 1vh;
+  }
+
+  html {
+    height: -webkit-fill-available;
+  }
+
   body {
     @apply bg-slate-950 text-slate-100 overflow-x-hidden;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    /* Enable momentum scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
   }
 
   /* Custom modern sleek scrollbar */

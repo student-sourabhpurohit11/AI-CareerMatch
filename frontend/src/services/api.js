@@ -32,8 +32,11 @@ api.interceptors.response.use(
       // Clear expired credentials
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      if (window.location.pathname !== '/login' && window.location.pathname !== '/register' && window.location.pathname !== '/') {
-        window.location.href = '/login?expired=true';
+      const path = window.location.pathname;
+      const isPublic = path.endsWith('/login') || path.endsWith('/register') || path.endsWith('/') || path === import.meta.env.BASE_URL;
+      if (!isPublic) {
+        // Use relative navigation so it works under any base path (local dev or GitHub Pages)
+        window.location.href = import.meta.env.BASE_URL + 'login?expired=true';
       }
     }
     return Promise.reject(error);
