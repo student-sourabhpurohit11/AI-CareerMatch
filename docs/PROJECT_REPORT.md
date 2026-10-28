@@ -7,9 +7,8 @@
 
 **PROJECT TITLE:** AI-CareerMatch: AI-Powered Cloud-Based Resume Analysis, Job Matching and Career Recommendation System  
 **DEGREE:** Bachelor of Technology in Computer Science & Engineering  
-**ACADEMIC YEAR:** 2025–2026 (7th & 8th Semester Major Project)  
+**ACADEMIC YEAR:** 2025–2026 (7th & 8th Semester Minor Project)  
 **SUBMITTED BY:** Sourabh Purohit  
-**SUPERVISOR / GUIDE:** Department of Computer Science & Engineering  
 
 ---
 
