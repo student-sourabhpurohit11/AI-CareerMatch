@@ -19,6 +19,7 @@ class ResumeAnalysisResponse(BaseModel):
     education_score: float
     project_score: float
     completeness_score: float
+    presentation_score: Optional[float] = None
     strengths_json: Optional[List[str]] = None
     improvements_json: Optional[List[str]] = None
     summary_text: Optional[str] = None

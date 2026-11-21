@@ -34,7 +34,8 @@ class Settings(BaseSettings):
     def cors_origins_list(self) -> List[str]:
         if isinstance(self.CORS_ORIGINS, list):
             return self.CORS_ORIGINS
-        return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
+        origins = [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
+        return origins
 
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> str:

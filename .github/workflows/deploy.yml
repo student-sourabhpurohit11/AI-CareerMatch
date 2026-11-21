@@ -35,7 +35,7 @@ jobs:
 
       # 4. Build the Vite app.
       #    GITHUB_ACTIONS=true is automatically set, which vite.config.js uses
-      #    to apply base: '/AI-carrermatch/' for correct asset paths on GH Pages.
+      #    to apply base: '/AI-CareerMatch/' for correct asset paths on GH Pages.
       #    VITE_API_URL points to your deployed backend (update this value
       #    once your backend is live on a public URL).
       - name: Build production bundle
@@ -55,3 +55,4 @@ jobs:
           keep_files: false
           # Commit message shown in gh-pages branch history
           commit_message: 'Deploy: ${{ github.sha }}'
+

@@ -63,13 +63,27 @@ def test_nlp_skill_extraction():
 
 
 def test_explainable_resume_scoring():
-    sections = {
-        "skills": "Python, FastAPI, MySQL, Docker, React, Git, REST API",
-        "projects": "Built complete cloud web application with FastAPI and MySQL.",
-        "education": "B.Tech Computer Science and Engineering 2026",
-        "experience": "Backend intern building REST endpoints.",
-        "certifications": ""
-    }
+    sample_text = """
+    Alex Rivera
+    alex.rivera@example.com | +91 9876543210
+    github.com/alexrivera | linkedin.com/in/alexrivera
+    
+    EDUCATION
+    B.Tech in Computer Science and Engineering - 2026
+    Institute of Technology, CGPA: 8.8/10
+    
+    TECHNICAL SKILLS
+    Python, FastAPI, SQL, MySQL, React, Docker, Git, REST API
+    
+    PROJECTS
+    AI-CareerMatch Platform (github.com/alexrivera/ai-careermatch)
+    Built an intelligent explainable resume parser and matching platform using FastAPI, React, and MySQL. Reduced matching latency by 45% and served 500+ student queries.
+    
+    EXPERIENCE
+    Software Engineering Intern at CloudTech (Jan 2024 - Present)
+    Developed and optimized REST APIs, automated database workflows, and deployed microservices using Docker.
+    """
+    sections = detect_sections(sample_text)
     extracted_skills = [
         {"name": "Python", "category": "programming_language"},
         {"name": "FastAPI", "category": "framework"},
@@ -78,7 +92,7 @@ def test_explainable_resume_scoring():
         {"name": "Git", "category": "tool"},
         {"name": "React", "category": "framework"}
     ]
-    analysis = analyze_resume_sections(sections, extracted_skills, "raw text")
+    analysis = analyze_resume_sections(sections, extracted_skills, sample_text)
     assert analysis["overall_score"] >= 70.0
     assert len(analysis["strengths_json"]) > 0
     assert len(analysis["improvements_json"]) > 0

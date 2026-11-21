@@ -198,6 +198,7 @@ def get_resume_analysis(
         education_score=float(resume.analysis.education_score),
         project_score=float(resume.analysis.project_score),
         completeness_score=float(resume.analysis.completeness_score),
+        presentation_score=float(resume.analysis.completeness_score),  # re-uses completeness for existing records
         strengths_json=resume.analysis.strengths_json or [],
         improvements_json=resume.analysis.improvements_json or [],
         summary_text=resume.analysis.summary_text,
