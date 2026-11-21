@@ -1,6 +1,6 @@
 # AI-CareerMatch
 ### AI-Powered Cloud-Based Resume Analysis, Job Matching, and Career Recommendation System
-*B.Tech Computer Science & Engineering Major College Project*
+
 
 [![Python 3.12](https://img.shields.io/badge/Python-3.12-blue.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-green.svg)](https://fastapi.tiangolo.com)
